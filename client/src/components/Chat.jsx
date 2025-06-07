@@ -6,10 +6,53 @@ const dummyMessage = [
   {
     name: "Prakash",
     message: "Helloo Kaise ho sab",
-    time: "20:00",
+    time: "08:40",
     isAdmin: true,
   },
+  {
+    name: "Ankit",
+    message: "Bhai mai badiya hoon, tu suna",
+    time: "08:41",
+    isAdmin: false,
+  },
+  {
+    name: "Adil",
+    message: "Chalo milke kuch plan karte hain",
+    time: "08:42",
+    isAdmin: false,
+  },
+  {
+    name: "Bobby",
+    message: "Kal movie dekhne chalein?",
+    time: "08:43",
+    isAdmin: false,
+  },
+  {
+    name: "Ravi",
+    message: "Haan bro, good idea!",
+    time: "08:44",
+    isAdmin: false,
+  },
+  {
+    name: "Swati",
+    message: "Main bhi chalungi 😄",
+    time: "08:45",
+    isAdmin: false,
+  },
+  {
+    name: "Prakash",
+    message: "Okay sab ready ho jao 6 baje",
+    time: "08:46",
+    isAdmin: true,
+  },
+  {
+    name: "Ankit",
+    message: "Done! See you all 🚌",
+    time: "08:47",
+    isAdmin: false,
+  },
 ];
+
 function Chat() {
   const messagesContainerRef = useRef(null);
 
