@@ -1,4 +1,4 @@
-import { Crown, User } from "lucide-react";
+import { Crown, User, Wrench  } from "lucide-react";
 import React from "react";
 
 function UserBox(props) {
@@ -10,13 +10,13 @@ function UserBox(props) {
       <div className="flex gap-5">
         <div
           id="iamge-box"
-          className="center h-14 w-14 rounded-full border border-cyan-300"
+          className="center h-12 w-12 rounded-full border border-cyan-300"
         >
           <User />
         </div>
 
         <div className="flex flex-col text-xs">
-          <h1 className="text-cyan-300 text-lg">{props.name}</h1>
+          <h1 className="text-cyan-300 text-sm ">{props.name}</h1>
           <div className="flex gap-1">
             <span>{props.status}</span>•<span>{props.time} m Ago</span>
           </div>
@@ -26,6 +26,7 @@ function UserBox(props) {
       <span title="host" className="my-auto text-yellow-500">
         {" "}
         {props.isHost ? <Crown /> : ""}
+        {props.isMod ? <Wrench  className="text-green-500" /> : ""}
       </span>
     </div>
   );
