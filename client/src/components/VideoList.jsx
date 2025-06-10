@@ -22,7 +22,7 @@ function SongList() {
   return (
     <div
       id="SongList"
-      className="flex flex-col h-[500px] p-0 rounded-lg bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative"
+      className="flex flex-col h-[400px] p-0 rounded-lg bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative"
     >
       {/* Sticky Header - Updated to match Chat component */}
       <div className="sticky top-0 z-10 overflow-hidden">

@@ -32,7 +32,7 @@ function NavBar() {
         </div>
 
         {/* buttons */}
-        <div className="hidden lg:flex items-center gap-5 text-sm">
+        <div className="hidden lg:flex items-center gap-2 text-sm">
           <button
             name="invite friends"
             className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
@@ -41,13 +41,21 @@ function NavBar() {
             Invite
           </button>
           <button
-            name="copy room code"
+            title="copy room code"
             className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
           >
             <Copy size={15} /> Room Code
           </button>
+
           <button
-            name="settings"
+            title="Leave room"
+            className="flex items-center gap-2 justify-center h-9 px-2 border rounded-md border-white/20 text-red-500 hover:bg-red-500/10 bg-white/5"
+          >
+            <LogOut size={15} /> Leave
+          </button>
+
+          <button
+            title="settings"
             className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
           >
             <Settings size={15} />
