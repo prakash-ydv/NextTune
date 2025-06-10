@@ -1,8 +1,19 @@
-import React, { useState } from "react";
-import { Copy, Menu, Play, Settings, UserPlus } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Copy, LogOut, Menu, Play, Settings, UserPlus, X } from "lucide-react";
 
 function NavBar() {
   const [isMenuActive, setIsMenuActive] = useState(false);
+
+  useEffect(() => {
+    if (isMenuActive) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Clean up on unmount (in case component is removed while menu is open)
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [isMenuActive]);
 
   function toggleMenu() {
     setIsMenuActive((prev) => !prev);
@@ -22,38 +33,48 @@ function NavBar() {
 
         {/* buttons */}
         <div className="hidden lg:flex items-center gap-5 text-sm">
-          <button name="invite friends" className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
+          <button
+            name="invite friends"
+            className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
+          >
             <UserPlus size={15} />
             Invite
           </button>
-          <button name="copy room code" className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
+          <button
+            name="copy room code"
+            className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
+          >
             <Copy size={15} /> Room Code
           </button>
-          <button name="settings" className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
+          <button
+            name="settings"
+            className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
+          >
             <Settings size={15} />
           </button>
         </div>
 
         <button onClick={() => toggleMenu()} className="lg:hidden text-white">
-          <Menu />
+          {isMenuActive ? <X /> : <Menu />}
         </button>
       </div>
 
       <div
         className={`${
           isMenuActive ? "absolute" : "hidden"
-        } right-0 w-2/4 `}
+        } w-[100vw] h-[95vh] flex flex-col top-15 items-center justify-center gap-2 backdrop-blur-xl text-sm z-99`}
       >
-        {/* buttons */}
-        <div className="flex flex-col items-center gap-1 text-sm">
-          <button className="flex items-center gap-2 justify-center h-9 w-full px-2 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
-            <UserPlus size={15} />
-            Invite
-          </button>
-          <button className="flex items-center gap-2 justify-center h-9 w-full px-2 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
-            <Copy size={15} /> Room Code
-          </button>
-        </div>
+        {/* buttons for phone view */}
+        <button className="flex items-center gap-2 justify-center h-9 w-42 px-2 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
+          <UserPlus size={15} />
+          Invite
+        </button>
+        <button className="flex items-center gap-2 justify-center h-9 w-42 px-2 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5">
+          <Copy size={15} /> Room Code
+        </button>
+        <button className="flex items-center gap-2 justify-center h-9 w-42 px-2 border rounded-md border-white/20 text-red-500 hover:bg-red-500/10 bg-white/5">
+          <LogOut size={15} /> Leave
+        </button>
       </div>
     </>
   );
