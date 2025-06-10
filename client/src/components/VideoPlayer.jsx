@@ -13,8 +13,10 @@ const YoutubePlayer = ({ videoId }) => {
   };
 
   return (
+    
     <div className="relative aspect-video w-full max-w-4xl mx-auto  rounded-lg overflow-hidden">
       <YouTube videoId={videoId} opts={opts} className="absolute top-0 left-0 w-full h-full" />
+      
     </div>
   );
 };
