@@ -13,7 +13,7 @@ function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
       <NavBar />
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col gap-6">
           {/* Main Content Area */}
           <div className="flex flex-col lg:flex-row gap-6">
@@ -22,11 +22,11 @@ function HomePage() {
               {/* 16:9 Aspect Ratio Container */}
               <div className="relative pt-[56.25%] w-full bg-black rounded-xl overflow-hidden shadow-2xl">
                 <div className="absolute inset-0">
-                  <VideoPlayer />
+                  <VideoPlayer videoId={"kKljXVVkgS4"} />
                 </div>
               </div>
 
-              <VideoControls isAdmin={true} isMod={false} />
+              {/* <VideoControls isAdmin={true} isMod={false} /> */}
 
               <div className="lg:hidden rounded-xl shadow-xl">
                 <Chat chats={chats} />

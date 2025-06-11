@@ -1,18 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import SongBoxForSongList from "./VideoBoxForSongList";
 import { AnimatePresence, motion } from "framer-motion";
+import RoomContext from "../context/RoomContext";
 
-const dummySongs = [
-  { title: "ipsum dolor...", channel: "Discovery Channel", thumbnail: "" },
-  { title: "Mountain Adventures", channel: "Adventure TV", duration: "12:30", thumbnail: "from-green-500/20 to-blue-500/20" },
-  { title: "Desert Landscapes", channel: "Nature Plus", thumbnail: "from-orange-500/20 to-red-500/20" },
-  { title: "ipsum dolor...", channel: "Discovery Channel", thumbnail: "" },
-  { title: "Mountain Adventures", channel: "Adventure TV", duration: "12:30", thumbnail: "from-green-500/20 to-blue-500/20" },
-  { title: "Desert Landscapes", channel: "Nature Plus", thumbnail: "from-orange-500/20 to-red-500/20" },
-];
 
 function SongList() {
+  const {videos} = useContext(RoomContext);
+  const dummySongs = videos.queue;
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   function toggleSearchActive() {

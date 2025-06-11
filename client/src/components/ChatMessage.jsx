@@ -1,4 +1,4 @@
-import { Crown } from "lucide-react";
+import { Crown, Wrench } from "lucide-react";
 import React from "react";
 
 function ChatMessage(props) {
@@ -27,7 +27,7 @@ function ChatMessage(props) {
             </span>
             {msg.isHost && <Crown className="w-3 h-3 text-amber-400" />}
             <span className="text-xs text-gray-400">{props.time}</span>
-            {props.isAdmin ? <Crown size={15}className="text-yellow-500" /> : ""}
+            {props.isAdmin ? <Crown size={15} className="text-yellow-500" /> : <Wrench size={15} className="text-green-500"/>}
           </div>
           <p className="text-sm text-gray-300 leading-relaxed">
             {props.userMessage}

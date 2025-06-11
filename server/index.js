@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
+import { channel } from "diagnostics_channel";
 
 dotenv.config();
 
@@ -48,20 +49,45 @@ io.on("connection", (socket) => {
           name: name,
           userId: socket.id,
           joinedTime: Date.now(),
-          role: "admin",
+          status: "watching",
+          isHost: true,
+          isMod: false,
         },
       ],
       videoInfo: {
         currentVideoId: "",
         startedAt: "",
-        queue: [{}],
+        queue: [
+          {
+            title: "Sanam Teri Kasam, (Lyrical Video) - Harshvardhan, Mawra | Ankit Tiwari | Palak M | Himesh Reshammiya",
+            channel: "SonyMusicIndiaVEVO",
+            thumbnail: "https://www.koimoi.com/wp-content/new-galleries/2016/02/sanam-teri-kasam-review-2.jpg",
+          },
+        ],
       },
       chatInfo: [
         {
           name: "NextTune",
-          message: "Welcome to the room !",
+          message:
+            "Welcome to the room, Invite and enjoy with your loved ones !",
           time: Date.now(),
-          role: "bot",
+          isAdmin: false,
+          isMod: true,
+        },
+        {
+          name: "NextTune",
+          message:
+            "You can also chat with you friends :-), Just start typing..",
+          time: Date.now(),
+          isAdmin: false,
+          isMod: true,
+        },
+        {
+          name: "NextTune",
+          message: "Ok ! Bye...👋",
+          time: Date.now(),
+          isAdmin: false,
+          isMod: true,
         },
       ],
     };

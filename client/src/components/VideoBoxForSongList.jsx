@@ -57,7 +57,7 @@ function SongBoxForSongList({ title, thumbnail, channel, duration }) {
           {duration || "3:45"}
         </div>
         <img
-          src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-NMlkBwLw0NToVFEd6QmOG_MJDlSK2taHGw&s"}
+          src={thumbnail}
           alt="thumbnail"
           className="absolute inset-0 w-full h-full object-cover opacity-90"
         />

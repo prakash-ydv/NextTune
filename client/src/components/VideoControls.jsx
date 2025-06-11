@@ -21,7 +21,7 @@ function VideoControls(props) {
     <div
       className={`${
         canControl ? "flex" : "hidden"
-      } w-full items-center justify-center h-16 text-white gap-5 bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 rounded-md`}
+      } w-full items-center justify-center h-10 text-white gap-5 bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 rounded-md`}
     >
       <button title="previous">
         <SkipBack />
@@ -29,7 +29,7 @@ function VideoControls(props) {
       <button
         title="play/pause"
         onClick={() => togglePlayButton()}
-        className="center h-12 w-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-white"
+        className="center h-8 w-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-white"
       >
         {isPlaying ? <Play /> : <Pause />}
       </button>

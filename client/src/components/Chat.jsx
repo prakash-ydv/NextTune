@@ -1,59 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 import { MessageCircleMore, Send } from "lucide-react";
-
-const dummyMessage = [
-  {
-    name: "Prakash",
-    message: "Helloo Kaise ho sab",
-    time: "08:40",
-    isAdmin: true,
-  },
-  {
-    name: "Ankit",
-    message: "Bhai mai badiya hoon, tu suna",
-    time: "08:41",
-    isAdmin: false,
-  },
-  {
-    name: "Adil",
-    message: "Chalo milke kuch plan karte hain",
-    time: "08:42",
-    isAdmin: false,
-  },
-  {
-    name: "Bobby",
-    message: "Kal movie dekhne chalein?",
-    time: "08:43",
-    isAdmin: false,
-  },
-  {
-    name: "Ravi",
-    message: "Haan bro, good idea!",
-    time: "08:44",
-    isAdmin: false,
-  },
-  {
-    name: "Swati",
-    message: "Main bhi chalungi 😄",
-    time: "08:45",
-    isAdmin: false,
-  },
-  {
-    name: "Prakash",
-    message: "Okay sab ready ho jao 6 baje",
-    time: "08:46",
-    isAdmin: true,
-  },
-  {
-    name: "Ankit",
-    message: "Done! See you all 🚌",
-    time: "08:47",
-    isAdmin: false,
-  },
-];
+import RoomContext from "../context/RoomContext";
 
 function Chat() {
+  const { chats } = useContext(RoomContext);
   const messagesContainerRef = useRef(null);
 
   // Scroll to bottom of message area
@@ -65,11 +16,21 @@ function Chat() {
         behavior: "smooth",
       });
     }
-  }, [dummyMessage.length]); // Only when messages change
+  }, [chats.length]); // Only when messages change
+
+  function realTime(unix) {
+    const unixTimestamp = unix; // example UNIX timestamp
+    const date = new Date(unixTimestamp); // Convert to milliseconds
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    const timeString = `${hours}:${minutes}`;
+    return timeString;
+  }
 
   return (
     <div className="flex flex-col h-[500px] p-0 rounded-lg bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative">
-
       {/* Sticky Header */}
       <div className="sticky top-0 z-10">
         <div className="flex text-sm items-center bg-black/25 gap-4 px-5 py-3 backdrop-blur-3xl">
@@ -89,13 +50,14 @@ function Chat() {
         className="flex-1 flex-col overflow-y-auto px-5 py-2 scrollbar-hide"
         ref={messagesContainerRef}
       >
-        {dummyMessage.map((item, index) => (
+        {chats.map((item, index) => (
           <ChatMessage
             key={index}
             userName={item.name}
             userMessage={item.message}
-            time={item.time}
+            time={realTime(item.time)}
             isAdmin={item.isAdmin}
+            isMod = {item.isMod}
           />
         ))}
       </div>
