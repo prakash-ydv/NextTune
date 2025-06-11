@@ -19,9 +19,66 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 
+function newRoomCode() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
+
+let rooms = {};
+
 // WebSocket connection
 io.on("connection", (socket) => {
   console.log("Client connected", socket.id);
+
+  // create room
+  socket.on("create-room", (data) => {
+    const { name, roomName } = data;
+    const code = newRoomCode();
+
+    rooms[code] = {
+      roomInfo: {
+        roomName: roomName,
+        roomCode: code,
+        roomPass: "",
+        adminId: socket.id,
+        mods: [],
+        createdTime: Date.now(),
+      },
+      userInfo: [
+        {
+          name: name,
+          userId: socket.id,
+          joinedTime: Date.now(),
+          role: "admin",
+        },
+      ],
+      videoInfo: {
+        currentVideoId: "",
+        startedAt: "",
+        queue: [{}],
+      },
+      chatInfo: [
+        {
+          name: "NextTune",
+          message: "Welcome to the room !",
+          time: Date.now(),
+          role: "bot",
+        },
+      ],
+    };
+
+    socket.join(code);
+
+    const infos = {
+      roomCode: code,
+      chatInfo: rooms[code].chatInfo,
+      videos: rooms[code].videoInfo,
+      users: rooms[code].userInfo,
+    };
+
+    socket.emit("room-created", infos);
+
+    console.log("Room Created", infos);
+  });
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");

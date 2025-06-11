@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import RoomContext from "../context/RoomContext";
 
 function CreateOrJoinRoom() {
+  const { myName, setMyName, roomName, setRoomName, createRoom } =
+    useContext(RoomContext);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-10">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12">
@@ -8,39 +11,37 @@ function CreateOrJoinRoom() {
         <div className="group relative flex-1">
           <div className="absolute -inset-1 rounded-2xl opacity-75 blur transition-all duration-500 group-hover:opacity-100"></div>
           <div className="relative h-full bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-gray-700/50 shadow-2xl overflow-hidden">
-
             <div className="relative z-10">
               <h2 className="text-2xl mb-5 font-bold text-white">
                 Create Room
               </h2>
 
-              <form className="space-y-5">
-                <div>
-                    
-                  <input
-                    id="create-name"
-                    type="text"
-                    placeholder="Enter your name"
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                  />
-                </div>
+              <form className="space-y-5" onSubmit={(e) => createRoom(e)}>
+                <input
+                  id="create-name"
+                  type="text"
+                  required
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                  value={myName}
+                  onChange={(e) => setMyName(e.target.value)}
+                />
 
-                <div>
-                    
-                  <input
-                    id="room-name"
-                    type="text"
-                    placeholder="Choose a room name"
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                  />
-                </div>
+                <input
+                  id="room-name"
+                  type="text"
+                  required
+                  placeholder="Choose a room name"
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                  value={roomName}
+                  onChange={(e) => setRoomName(e.target.value)}
+                />
 
-                <button
-                  type="button"
+                <input
+                  type="submit"
+                  value={"Create Room"}
                   className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 shadow-lg hover:shadow-cyan-500/30"
-                >
-                  Create Room
-                </button>
+                ></input>
               </form>
             </div>
           </div>
@@ -57,14 +58,11 @@ function CreateOrJoinRoom() {
         <div className="group relative flex-1">
           <div className="absolute -inset-1  rounded-2xl opacity-75 blur transition-all duration-500 group-hover:opacity-100"></div>
           <div className="relative h-full bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-gray-700/50 shadow-2xl overflow-hidden">
-            
-
             <div className="relative z-10">
               <h2 className="text-2xl font-bold text-white mb-5">Join Room</h2>
 
               <form className="space-y-5">
                 <div>
-                    
                   <input
                     id="join-name"
                     type="text"
@@ -74,7 +72,6 @@ function CreateOrJoinRoom() {
                 </div>
 
                 <div>
-                    
                   <input
                     id="room-code"
                     type="number"
