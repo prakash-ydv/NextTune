@@ -9,6 +9,8 @@ const YoutubePlayer = ({ videoId }) => {
       autoplay: 1,
       controls: 0,
       rel: 0,
+      modestbranding : 1,
+      showinfo : 0
     },
   };
 

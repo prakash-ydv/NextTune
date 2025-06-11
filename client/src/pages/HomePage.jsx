@@ -13,7 +13,7 @@ function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
       <NavBar />
 
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-4 max-w-[90rem]">
         <div className="flex flex-col gap-6">
           {/* Main Content Area */}
           <div className="flex flex-col lg:flex-row gap-6">

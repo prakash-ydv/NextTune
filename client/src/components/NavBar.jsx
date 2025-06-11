@@ -27,7 +27,7 @@ function NavBar() {
             <Play className="w-4 h-4 text-white" />
           </div>
           <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            WeTube
+            NextTune
           </h1>
         </div>
 
