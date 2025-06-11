@@ -1,11 +1,14 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import { MessageCircleMore, Send } from "lucide-react";
 import RoomContext from "../context/RoomContext";
 
 function Chat() {
-  const { chats } = useContext(RoomContext);
+  const { chats, isAdmin, isMod, socket, roomCode, myName } =
+    useContext(RoomContext);
   const messagesContainerRef = useRef(null);
+
+  const [message, setMessage] = useState("");
 
   // Scroll to bottom of message area
   useEffect(() => {
@@ -18,6 +21,7 @@ function Chat() {
     }
   }, [chats.length]); // Only when messages change
 
+  // unix to HH:MM
   function realTime(unix) {
     const unixTimestamp = unix; // example UNIX timestamp
     const date = new Date(unixTimestamp); // Convert to milliseconds
@@ -27,6 +31,23 @@ function Chat() {
 
     const timeString = `${hours}:${minutes}`;
     return timeString;
+  }
+
+  // send message to server
+  function sendMessage(e, message) {
+    e.preventDefault();
+    if (!socket || !socket.connected || !message.trim()) {
+      console.warn("Socket not connected ot message empty");
+    }
+    socket.emit("send-message", {
+      roomCode,
+      name: myName,
+      message,
+      isAdmin,
+      isMod,
+      time: Date.now(),
+    });
+    setMessage("");
   }
 
   return (
@@ -47,7 +68,7 @@ function Chat() {
 
       {/* Scrollable message area */}
       <div
-        className="flex-1 flex-col overflow-y-auto px-5 py-2 scrollbar-hide"
+        className="flex-1 flex-col overflow-y-auto px-5 py-1 scrollbar-hide"
         ref={messagesContainerRef}
       >
         {chats.map((item, index) => (
@@ -57,13 +78,14 @@ function Chat() {
             userMessage={item.message}
             time={realTime(item.time)}
             isAdmin={item.isAdmin}
-            isMod = {item.isMod}
+            isMod={item.isMod}
           />
         ))}
       </div>
 
       {/* Message form at bottom */}
       <form
+        onSubmit={(e) => sendMessage(e, message)}
         title="message"
         className="w-full flex items-center text-sm px-5 py-2 border-t border-cyan-900 backdrop-blur"
       >
@@ -71,6 +93,8 @@ function Chat() {
           className="w-full h-8 px-3 rounded text-white focus:outline-none"
           type="text"
           placeholder="Type message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
         />
 
         <button

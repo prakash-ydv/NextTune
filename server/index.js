@@ -59,9 +59,11 @@ io.on("connection", (socket) => {
         startedAt: "",
         queue: [
           {
-            title: "Sanam Teri Kasam, (Lyrical Video) - Harshvardhan, Mawra | Ankit Tiwari | Palak M | Himesh Reshammiya",
+            title:
+              "Sanam Teri Kasam, (Lyrical Video) - Harshvardhan, Mawra | Ankit Tiwari | Palak M | Himesh Reshammiya",
             channel: "SonyMusicIndiaVEVO",
-            thumbnail: "https://www.koimoi.com/wp-content/new-galleries/2016/02/sanam-teri-kasam-review-2.jpg",
+            thumbnail:
+              "https://www.koimoi.com/wp-content/new-galleries/2016/02/sanam-teri-kasam-review-2.jpg",
           },
         ],
       },
@@ -104,6 +106,24 @@ io.on("connection", (socket) => {
     socket.emit("room-created", infos);
 
     console.log("Room Created", infos);
+  });
+
+  // handle message
+
+  socket.on("send-message", (data) => {
+    const { roomCode, name, message, isAdmin, isMod, time } = data;
+
+    const room = rooms[roomCode];
+    room.chatInfo.push({
+      isAdmin,
+      isMod,
+      message,
+      name,
+      time,
+    });
+
+    io.to(roomCode).emit("updated-chat", room.chatInfo);
+    console.log(room.chatInfo);
   });
 
   socket.on("disconnect", () => {

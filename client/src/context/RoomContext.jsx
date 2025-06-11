@@ -13,6 +13,8 @@ export const RoomContextProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [videos, setVideos] = useState({});
   const [users, setUsers] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMod, setIsMod] = useState(false);
 
   useEffect(() => {
     // Initialize socket connection
@@ -38,6 +40,7 @@ export const RoomContextProvider = ({ children }) => {
       setChats(chats);
       setVideos(videos);
       setUsers(users);
+      setIsAdmin(true);
 
       localStorage.setItem("room-code", roomCode);
       console.log("Room Created with code", roomCode);
@@ -46,6 +49,17 @@ export const RoomContextProvider = ({ children }) => {
     return () => {
       localStorage.removeItem("room-code");
       socket.current.off("room-created");
+    };
+  }, []);
+
+  // handle chat updage
+  useEffect(() => {
+    socket.current.on("updated-chat", (data) => {
+      setChats(data);
+    });
+
+    return () => {
+      socket.current.off("updated-chat");
     };
   }, []);
 
@@ -70,6 +84,8 @@ export const RoomContextProvider = ({ children }) => {
         users,
         videos,
         chats,
+        isAdmin,
+        isMod,
       }}
     >
       {children}

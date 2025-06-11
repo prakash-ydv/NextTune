@@ -2,14 +2,10 @@ import { Crown, Wrench } from "lucide-react";
 import React from "react";
 
 function ChatMessage(props) {
-  const msg = {
-    user: "Gopi Bahu",
-    message: "Hello Kaisab Ba",
-  };
   return (
     <div
       key={""}
-      className="group hover:bg-white/5 -mx-2 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer"
+      className="group hover:bg-white/5 -mx-2 px-3 py-1 rounded-xl transition-all duration-300 cursor-pointer"
     >
       <div className="flex items-start gap-3">
         <div className=" mt-1 ">
@@ -25,9 +21,13 @@ function ChatMessage(props) {
             <span className="text-sm font-medium text-white">
               {props.userName}
             </span>
-            {msg.isHost && <Crown className="w-3 h-3 text-amber-400" />}
+            {props.isHost && <Crown className="w-3 h-3 text-amber-400" />}
             <span className="text-xs text-gray-400">{props.time}</span>
-            {props.isAdmin ? <Crown size={15} className="text-yellow-500" /> : <Wrench size={15} className="text-green-500"/>}
+            {props.isAdmin ? (
+              <Crown size={15} className="text-yellow-500" />
+            ) : (
+              <Wrench size={15} className="text-green-500" />
+            )}
           </div>
           <p className="text-sm text-gray-300 leading-relaxed">
             {props.userMessage}
