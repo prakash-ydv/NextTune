@@ -15,6 +15,9 @@ export const RoomContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMod, setIsMod] = useState(false);
+  const [joinRoomName, setJoinRoomName] = useState("");
+  const [joinRoomCode, setJoinRoomCode] = useState("");
+  const [isJoined, setIsJoined] = useState(false);
 
   useEffect(() => {
     // Initialize socket connection
@@ -41,9 +44,35 @@ export const RoomContextProvider = ({ children }) => {
       setVideos(videos);
       setUsers(users);
       setIsAdmin(true);
+      setIsJoined(true);
 
       localStorage.setItem("room-code", roomCode);
       console.log("Room Created with code", roomCode);
+    });
+
+    return () => {
+      localStorage.removeItem("room-code");
+      socket.current.off("room-created");
+    };
+  }, []);
+
+  //   handle room join
+  useEffect(() => {
+    if (isJoined) return;
+    socket.current.on("user-joined", (data) => {
+      const roomCode = data.roomCode;
+      const chats = data.chatInfo;
+      const videos = data.videos;
+      const users = data.users;
+      setRoomCode(roomCode);
+      setChats(chats);
+      setVideos(videos);
+      setUsers(users);
+      setMyName(data.myName)
+      setIsAdmin(data.isAdmin);
+
+      localStorage.setItem("room-code", roomCode);
+      console.log("Room Joined with code", roomCode);
     });
 
     return () => {
@@ -71,10 +100,25 @@ export const RoomContextProvider = ({ children }) => {
     }
   }
 
+  //   join room
+  function joinRoom(e) {
+    e.preventDefault();
+    if (socket.current) {
+      socket.current.emit("join-room", { joinRoomName, joinRoomCode });
+    }
+    setJoinRoomCode("");
+    setJoinRoomName("");
+  }
+
   return (
     <RoomContext.Provider
       value={{
         createRoom,
+        joinRoom,
+        joinRoomName,
+        joinRoomCode,
+        setJoinRoomName,
+        setJoinRoomCode,
         myName,
         setMyName,
         roomName,

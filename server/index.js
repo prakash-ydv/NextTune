@@ -108,8 +108,39 @@ io.on("connection", (socket) => {
     console.log("Room Created", infos);
   });
 
-  // handle message
+  // join room
+  socket.on("join-room", (data) => {
+    const { joinRoomName, joinRoomCode } = data;
+    const room = rooms[joinRoomCode];
 
+    if (!room) {
+      socket.emit("room-not-found");
+      return;
+    }
+    room.userInfo.push({
+      name: joinRoomName,
+      userId: socket.id,
+      joinedTime: Date.now(),
+      status: "watching",
+      isHost: false,
+      isMod: false,
+    });
+    socket.join(joinRoomCode);
+
+    const infos = {
+      roomCode: joinRoomCode,
+      chatInfo: rooms[joinRoomCode].chatInfo,
+      videos: rooms[joinRoomCode].videoInfo,
+      users: rooms[joinRoomCode].userInfo,
+      isAdmin: false,
+      myName: joinRoomName,
+    };
+
+    io.to(joinRoomCode).emit("user-joined", infos);
+    console.log("new user joined");
+  });
+
+  // handle message
   socket.on("send-message", (data) => {
     const { roomCode, name, message, isAdmin, isMod, time } = data;
 

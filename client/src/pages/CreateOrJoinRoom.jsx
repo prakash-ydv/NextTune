@@ -2,8 +2,18 @@ import React, { useContext } from "react";
 import RoomContext from "../context/RoomContext";
 
 function CreateOrJoinRoom() {
-  const { myName, setMyName, roomName, setRoomName, createRoom } =
-    useContext(RoomContext);
+  const {
+    myName,
+    setMyName,
+    roomName,
+    setRoomName,
+    createRoom,
+    joinRoom,
+    joinRoomName,
+    setJoinRoomName,
+    joinRoomCode,
+    setJoinRoomCode,
+  } = useContext(RoomContext);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-10">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12">
@@ -61,32 +71,53 @@ function CreateOrJoinRoom() {
             <div className="relative z-10">
               <h2 className="text-2xl font-bold text-white mb-5">Join Room</h2>
 
-              <form className="space-y-5">
-                <div>
-                  <input
-                    id="join-name"
-                    type="text"
-                    placeholder="Enter your name"
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-                  />
-                </div>
+              <form onSubmit={(e) => joinRoom(e)} className="space-y-5">
+                <input
+                  id="join-name"
+                  type="text"
+                  required
+                  minLength={3}
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                  onChange={(e) => {
+                    setJoinRoomName(e.target.value);
+                    e.target.setCustomValidity("");
+                  }}
+                  value={joinRoomName}
+                  onInvalid={(e) => {
+                    e.target.setCustomValidity(
+                      "Name should be of 3 or more letters"
+                    );
+                  }}
+                />
 
-                <div>
-                  <input
-                    id="room-code"
-                    type="number"
-                    maxLength={6}
-                    placeholder="Enter 6-digit code"
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all tracking-widest text-center text-lg font-mono"
-                  />
-                </div>
+                <input
+                  id="room-code"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  required
+                  placeholder="Enter 6-digit code"
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all tracking-widest text-center text-lg font-mono"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, ""); // remove non-digits
+                    setJoinRoomCode(value);
+                    e.target.setCustomValidity(""); 
+                  }}
+                  value={joinRoomCode}
+                  onInvalid={(e) => {
+                    e.target.setCustomValidity(
+                      "Please enter a valid 6-digit code"
+                    );
+                  }}
+                />
 
-                <button
-                  type="button"
+                <input
+                  type="submit"
+                  value={"Join Room"}
                   className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium rounded-lg hover:from-purple-600 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
-                >
-                  Join Room
-                </button>
+                ></input>
               </form>
             </div>
           </div>
