@@ -1,9 +1,8 @@
 const api = import.meta.env.VITE_API;
 
-async function searchVideo() {
-  const response = await fetch(`api/${query}`);
+async function searchVideo(query) {
+  const response = await fetch(`http://localhost:3000/search/${query}`);
   const data = await response.json();
-  console.log(data)
   return data;
 }
 

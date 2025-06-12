@@ -179,7 +179,7 @@ app.get("/search/:videoTitle", async (req, res) => {
     const response = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
         videoTitle
-      )}&key=${api_key}&maxResults=5`
+      )}&key=${api_key}&maxResults=4`
     );
 
     const data = await response.json();
