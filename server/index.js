@@ -94,7 +94,8 @@ io.on("connection", (socket) => {
       ],
     };
 
-    socket.join(code);
+    socket.join(String(code));
+    console.log("room created - ", code);
 
     const infos = {
       roomCode: code,
@@ -104,8 +105,6 @@ io.on("connection", (socket) => {
     };
 
     socket.emit("room-created", infos);
-
-    console.log("Room Created", infos);
   });
 
   // join room
@@ -125,7 +124,9 @@ io.on("connection", (socket) => {
       isHost: false,
       isMod: false,
     });
-    socket.join(joinRoomCode);
+
+    socket.join(String(joinRoomCode));
+    console.log("Room Joined", joinRoomCode);
 
     const infos = {
       roomCode: joinRoomCode,
@@ -136,13 +137,14 @@ io.on("connection", (socket) => {
       myName: joinRoomName,
     };
 
-    io.to(joinRoomCode).emit("user-joined", infos);
+    socket.emit("user-joined", infos);
     console.log("new user joined");
   });
 
   // handle message
   socket.on("send-message", (data) => {
     const { roomCode, name, message, isAdmin, isMod, time } = data;
+    console.log("message sent to room", roomCode);
 
     const room = rooms[roomCode];
     room.chatInfo.push({
@@ -153,8 +155,7 @@ io.on("connection", (socket) => {
       time,
     });
 
-    io.to(roomCode).emit("updated-chat", room.chatInfo);
-    console.log(room.chatInfo);
+    io.to(String(roomCode)).emit("updated-chat", room.chatInfo);
   });
 
   socket.on("disconnect", () => {
