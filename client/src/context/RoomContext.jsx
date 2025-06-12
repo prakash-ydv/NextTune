@@ -58,30 +58,41 @@ export const RoomContextProvider = ({ children }) => {
 
   //   handle room join
   useEffect(() => {
-    socket.current.on("user-joined", (data) => {
-      if (!isJoined) {
-        const roomCode = data.roomCode;
-        const chats = data.chatInfo;
-        const videos = data.videos;
-        const users = data.users;
-        setRoomCode(roomCode);
-        setChats(chats);
-        setVideos(videos);
-        setUsers(users);
-        setMyName(data.myName);
-        setIsAdmin(data.isAdmin);
-        setIsJoined(true)
+    socket.current.on(
+      "user-joined",
+      (data) => {
+        if (!isJoined) {
+          const roomCode = data.roomCode;
+          const chats = data.chatInfo;
+          const videos = data.videos;
+          const users = data.users;
+          setRoomCode(roomCode);
+          setChats(chats);
+          setVideos(videos);
+          setUsers(users);
+          setMyName(data.myName);
+          setIsAdmin(data.isAdmin);
+          setIsJoined(true);
 
-        localStorage.setItem("room-code", roomCode);
-        console.log("Room Joined with code", roomCode);
-      }
-    },[]);
+          localStorage.setItem("room-code", roomCode);
+          console.log("Room Joined with code", roomCode);
+        }
+      },
+      []
+    );
 
     return () => {
       localStorage.removeItem("room-code");
       socket.current.off("user-joined");
     };
   }, []);
+
+  // sync user when a user join or left
+  useEffect(() => {
+    socket.current.on("sync-users", (data) => {
+      setUsers(data);
+    });
+  });
 
   // handle chat updage
   useEffect(() => {

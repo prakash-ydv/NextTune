@@ -137,7 +137,10 @@ io.on("connection", (socket) => {
       myName: joinRoomName,
     };
 
+    const updatedUsers = rooms[joinRoomCode].userInfo;
+
     socket.emit("user-joined", infos);
+    io.to(String(joinRoomCode)).emit("sync-users", updatedUsers);
     console.log("new user joined");
   });
 
