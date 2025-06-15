@@ -11,7 +11,8 @@ export const RoomContextProvider = ({ children }) => {
   const [roomName, setRoomName] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [chats, setChats] = useState([]);
-  const [videos, setVideos] = useState({});
+  const [videos, setVideos] = useState([]);
+  const [currentVideoId, setCurrentVideoId] = useState("");
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMod, setIsMod] = useState(false);
@@ -106,6 +107,23 @@ export const RoomContextProvider = ({ children }) => {
     };
   }, []);
 
+  // update Queue
+  useEffect(() => {
+    if (!socket.current) return;
+
+    socket.current.on("queue-updated", (data) => {
+      console.log("queue-updated");
+      console.log(data);
+      if (data) {
+        setVideos([...data]);
+      }
+    });
+
+    return () => {
+      socket.current.off("queue-updated");
+    };
+  }, [socket.current]);
+
   //   create room function
   function createRoom(e) {
     e.preventDefault();
@@ -122,6 +140,16 @@ export const RoomContextProvider = ({ children }) => {
     }
     setJoinRoomCode("");
     setJoinRoomName("");
+  }
+
+  // add video id to queue
+  function addVideoToQueue(vdo) {
+    if (!socket.current) return;
+    socket.current?.emit("add-video-id-to-queue", {
+      vdo,
+      roomCode,
+    });
+    console.log("Video Added");
   }
 
   return (
@@ -144,6 +172,7 @@ export const RoomContextProvider = ({ children }) => {
         chats,
         isAdmin,
         isMod,
+        addVideoToQueue,
       }}
     >
       {children}

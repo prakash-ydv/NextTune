@@ -57,15 +57,7 @@ io.on("connection", (socket) => {
       videoInfo: {
         currentVideoId: "",
         startedAt: "",
-        queue: [
-          {
-            title:
-              "Sanam Teri Kasam, (Lyrical Video) - Harshvardhan, Mawra | Ankit Tiwari | Palak M | Himesh Reshammiya",
-            channel: "SonyMusicIndiaVEVO",
-            thumbnail:
-              "https://www.koimoi.com/wp-content/new-galleries/2016/02/sanam-teri-kasam-review-2.jpg",
-          },
-        ],
+        queue: [],
       },
       chatInfo: [
         {
@@ -141,7 +133,22 @@ io.on("connection", (socket) => {
 
     socket.emit("user-joined", infos);
     io.to(String(joinRoomCode)).emit("sync-users", updatedUsers);
+    const updatedQueue = room.videoInfo.queue;
+    io.to(String(joinRoomCode)).emit("queue-updated", updatedQueue);
     console.log("new user joined");
+  });
+
+  // add video id to queue
+
+  socket.on("add-video-id-to-queue", (data) => {
+    const { vdo, roomCode } = data;
+
+    const room = rooms[roomCode];
+    if (!room) return;
+    room.videoInfo.queue.push(vdo);
+    const updatedQueue = room.videoInfo.queue;
+    io.to(String(roomCode)).emit("queue-updated", updatedQueue);
+    console.log("Updated Queue Sent", updatedQueue);
   });
 
   // handle message
@@ -188,7 +195,7 @@ app.get("/search/:videoTitle", async (req, res) => {
       return res.status(500).json({ error: data.error });
     }
 
-    res.json(data);
+    res.json(data.items.slice(0, 4)); //send only 4 video data
   } catch (error) {
     console.error("YouTube API error:", error.message);
     res.status(500).json({ error: "Failed to fetch YouTube videos" });

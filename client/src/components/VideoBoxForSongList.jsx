@@ -65,7 +65,7 @@ function SongBoxForSongList({ title, thumbnail, channel, duration }) {
 
       {/* Title + Channel */}
       <div className="flex-1 min-w-0">
-        <p className="w-40 sm:w-auto text-white text-sm font-medium line-clamp-2 group-hover:text-cyan-400 transition-colors">
+        <p className="w-30 sm:w-auto text-white text-sm font-medium line-clamp-2 group-hover:text-cyan-400 transition-colors">
           {title || "Untitled Song"}
         </p>
         <p className="text-gray-400 text-xs mt-1 truncate">
@@ -76,7 +76,7 @@ function SongBoxForSongList({ title, thumbnail, channel, duration }) {
       {/* Buttons */}
       {isMobile ? (
         showButtons && (
-          <div className="absolute right-3 flex items-center gap-2 transition-opacity duration-300">
+          <div className="absolute right-0 flex items-center gap-2 transition-opacity duration-300">
             <button title="play" className="w-8 h-8 center hover:bg-white/10 rounded-full transition-all">
               <Play className="w-4 h-4 text-green-400" />
             </button>

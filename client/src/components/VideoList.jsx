@@ -7,8 +7,7 @@ import SearchResult from "./SearchResult";
 import searchVideo from "../api/searchVideo";
 
 function SongList() {
-  const { videos } = useContext(RoomContext);
-  const dummySongs = videos.queue;
+  const { videos, isAdmin, isMod } = useContext(RoomContext);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchResult, setSearchResult] = useState("");
   const [query, setQuery] = useState("");
@@ -23,7 +22,7 @@ function SongList() {
     const videos = await searchVideo(query);
     console.log(videos);
     setQuery("");
-    setSearchResult(videos.items);
+    setSearchResult(videos);
   }
 
   return (
@@ -42,7 +41,9 @@ function SongList() {
           </div>
           <div
             onClick={toggleSearchActive}
-            className="flex items-center px-2 py-1 rounded-lg gap-2 text-cyan-400 hover:bg-cyan-400/10 hover:scale-105 hover:text-white transition-all duration-200 cursor-pointer"
+            className={` ${
+              isAdmin || isMod ? "flex" : "hidden"
+            } items-center px-2 py-1 rounded-lg gap-2 text-cyan-400 hover:bg-cyan-400/10 hover:scale-105 hover:text-white transition-all duration-200 cursor-pointer`}
           >
             {isSearchActive ? (
               "Done"
@@ -89,12 +90,15 @@ function SongList() {
 
               {searchResult ? (
                 <div className="w-full h-full flex flex-col center ">
+                  {searchResult ? "" : <h1>Admin can add videos</h1>}
                   {searchResult?.map((item, index) => (
                     <SearchResult
+                      video={item}
                       thumbnail={item.snippet?.thumbnails.default.url}
                       title={item.snippet?.title}
                       channel={item.snippet?.channelTitle}
-                      videoId={item.id.videoId}
+                      addVideoInfo={item}
+                      key={index}
                     />
                   ))}
                 </div>
@@ -114,14 +118,15 @@ function SongList() {
               transition={{ duration: 0.2 }}
               className="flex flex-col gap-2 px-5 py-4"
             >
-              {dummySongs?.map((item, index) => (
-                <SongBoxForSongList
-                  key={index}
-                  title={item.title}
-                  channel={item.channel}
-                  thumbnail={item.thumbnail}
-                />
-              ))}
+              {videos.length > 0 &&
+                videos?.map((item, index) => (
+                  <SongBoxForSongList
+                    key={index}
+                    title={item.snippet.title}
+                    channel={item.snippet.channelTitle}
+                    thumbnail={item.snippet.thumbnails.default.url}
+                  />
+                ))}
             </motion.div>
           )}
         </AnimatePresence>
