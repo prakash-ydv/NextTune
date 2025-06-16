@@ -7,11 +7,13 @@ const RoomContext = createContext();
 // 2. Create the provider component
 export const RoomContextProvider = ({ children }) => {
   const socket = useRef(null);
+  const playerRef = useRef(null);
   const [myName, setMyName] = useState("");
   const [roomName, setRoomName] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [chats, setChats] = useState([]);
   const [videos, setVideos] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState("");
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -124,6 +126,26 @@ export const RoomContextProvider = ({ children }) => {
     };
   }, [socket.current]);
 
+  // sync play video
+  useEffect(() => {
+    if (!socket.current) return;
+    socket.current.on("sync-play-video", () => {
+      playerRef.current.playVideo();
+      setIsPlaying(true);
+      console.log("Playing...");
+    });
+  }, []);
+
+  // sync pause video
+  useEffect(() => {
+    if (!socket.current) return;
+    socket.current.on("sync-pause-video", () => {
+      playerRef.current.pauseVideo();
+      setIsPlaying(false);
+      console.log("Paus...");
+    });
+  }, []);
+
   //   create room function
   function createRoom(e) {
     e.preventDefault();
@@ -152,6 +174,16 @@ export const RoomContextProvider = ({ children }) => {
     console.log("Video Added");
   }
 
+  // sync play
+  function syncPlayVideo() {
+    if (!isAdmin && !isMod) return;
+    socket.current.emit("sync-play-video", { roomCode });
+  }
+
+  function syncPauseVideo() {
+    if (!isAdmin && !isMod) return;
+    socket.current.emit("sync-pause-video", { roomCode });
+  }
   return (
     <RoomContext.Provider
       value={{
@@ -173,6 +205,9 @@ export const RoomContextProvider = ({ children }) => {
         isAdmin,
         isMod,
         addVideoToQueue,
+        playerRef,
+        syncPlayVideo,
+        syncPauseVideo,
       }}
     >
       {children}

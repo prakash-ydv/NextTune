@@ -55,6 +55,7 @@ io.on("connection", (socket) => {
         },
       ],
       videoInfo: {
+        isPlaying: false,
         currentVideoId: "",
         startedAt: "",
         queue: [],
@@ -149,6 +150,26 @@ io.on("connection", (socket) => {
     const updatedQueue = room.videoInfo.queue;
     io.to(String(roomCode)).emit("queue-updated", updatedQueue);
     console.log("Updated Queue Sent", updatedQueue);
+  });
+
+  // sync play
+  socket.on("sync-play-video", (data) => {
+    const { roomCode } = data;
+    const room = rooms[roomCode];
+    if (!room) return;
+
+    room.videoInfo.isPlaying = true;
+    io.to(String(roomCode)).emit("sync-play-video");
+  });
+
+  // sync play
+  socket.on("sync-pause-video", (data) => {
+    const { roomCode } = data;
+    const room = rooms[roomCode];
+    if (!room) return;
+
+    room.videoInfo.isPlaying = false;
+    io.to(String(roomCode)).emit("sync-pause-video");
   });
 
   // handle message
