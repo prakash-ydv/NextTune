@@ -6,6 +6,15 @@
   font-family: Geist;
 }
 
+html, body {
+  scroll-behavior: unset;
+  background: linear-gradient(to bottom right, #111827, #1f2937);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
 button {
   cursor: pointer;
 }
