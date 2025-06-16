@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
     const infos = {
       roomCode: code,
       chatInfo: rooms[code].chatInfo,
-      videos: rooms[code].videoInfo,
+      videoInfo: rooms[code].videoInfo,
       users: rooms[code].userInfo,
     };
 
@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
     const infos = {
       roomCode: joinRoomCode,
       chatInfo: rooms[joinRoomCode].chatInfo,
-      videos: rooms[joinRoomCode].videoInfo,
+      videoInfo: rooms[joinRoomCode].videoInfo,
       users: rooms[joinRoomCode].userInfo,
       isAdmin: false,
       myName: joinRoomName,
@@ -162,7 +162,7 @@ io.on("connection", (socket) => {
     io.to(String(roomCode)).emit("sync-play-video");
   });
 
-  // sync play
+  // sync pause
   socket.on("sync-pause-video", (data) => {
     const { roomCode } = data;
     const room = rooms[roomCode];

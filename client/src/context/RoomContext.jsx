@@ -10,9 +10,9 @@ export const RoomContextProvider = ({ children }) => {
   const playerRef = useRef(null);
   const [myName, setMyName] = useState("");
   const [roomName, setRoomName] = useState("");
-  const [roomCode, setRoomCode] = useState("");
+  const [roomCode, setRoomCode] = useState(null);
   const [chats, setChats] = useState([]);
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState([]); //queue
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState("");
   const [users, setUsers] = useState([]);
@@ -24,7 +24,7 @@ export const RoomContextProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://localhost:3000");
+    socket.current = io("http://192.168.1.4:3000");
 
     // Cleanup function
     return () => {
@@ -40,11 +40,11 @@ export const RoomContextProvider = ({ children }) => {
       const roomCode = data.roomCode;
       const chats = data.chatInfo;
       console.log(chats);
-      const videos = data.videos;
+      const videoInfo = data.videoInfo;
       const users = data.users;
       setRoomCode(roomCode);
       setChats(chats);
-      setVideos(videos);
+      setVideos(videoInfo.queue);
       setUsers(users);
       setIsAdmin(true);
       setIsJoined(true);
@@ -67,7 +67,8 @@ export const RoomContextProvider = ({ children }) => {
         if (!isJoined) {
           const roomCode = data.roomCode;
           const chats = data.chatInfo;
-          const videos = data.videos;
+          const videoInfo = data.videoInfo; //videoInfo
+          console.log("videos ", videoInfo);
           const users = data.users;
           setRoomCode(roomCode);
           setChats(chats);
@@ -76,6 +77,19 @@ export const RoomContextProvider = ({ children }) => {
           setMyName(data.myName);
           setIsAdmin(data.isAdmin);
           setIsJoined(true);
+
+          if (videos.currentVideoId) {
+            setCurrentVideoId(videoInfo.currentVideoId);
+            if (videoInfo.isPlaying == true) {
+              console.log("Status", videoInfo.isPlaying);
+              setIsPlaying(true);
+              console.log("P");
+            }else {
+            console.log("PS");
+            console.log("Status", videoInfo.isPlaying);
+            setIsPlaying(false);
+          }
+          } 
 
           localStorage.setItem("room-code", roomCode);
           console.log("Room Joined with code", roomCode);
@@ -89,6 +103,16 @@ export const RoomContextProvider = ({ children }) => {
       socket.current.off("user-joined");
     };
   }, []);
+
+  // handle play pause state change
+  useEffect(() => {
+    if (!playerRef.current) return;
+    if (isPlaying) {
+      playerRef.current.playVideo();
+    } else {
+      playerRef.current.pauseVideo();
+    }
+  }, [isPlaying]);
 
   // sync user when a user join or left
   useEffect(() => {
@@ -130,9 +154,8 @@ export const RoomContextProvider = ({ children }) => {
   useEffect(() => {
     if (!socket.current) return;
     socket.current.on("sync-play-video", () => {
-      playerRef.current.playVideo();
       setIsPlaying(true);
-      console.log("Playing...");
+      console.log("Play...")
     });
   }, []);
 
@@ -140,9 +163,8 @@ export const RoomContextProvider = ({ children }) => {
   useEffect(() => {
     if (!socket.current) return;
     socket.current.on("sync-pause-video", () => {
-      playerRef.current.pauseVideo();
       setIsPlaying(false);
-      console.log("Paus...");
+      console.log("Pause...");
     });
   }, []);
 
@@ -208,6 +230,7 @@ export const RoomContextProvider = ({ children }) => {
         playerRef,
         syncPlayVideo,
         syncPauseVideo,
+        isPlaying,
       }}
     >
       {children}
