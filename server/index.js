@@ -49,15 +49,17 @@ io.on("connection", (socket) => {
           name: name,
           userId: socket.id,
           joinedTime: Date.now(),
+          leftTime: 0,
           status: "watching",
           isHost: true,
           isMod: false,
+          isLeft: false,
         },
       ],
       videoInfo: {
         isPlaying: false,
         currentVideoId: "",
-        startedAt: "",
+        startedAt: Date.now(),
         queue: [],
       },
       chatInfo: [
@@ -113,9 +115,11 @@ io.on("connection", (socket) => {
       name: joinRoomName,
       userId: socket.id,
       joinedTime: Date.now(),
+      leftTime: 0,
       status: "watching",
       isHost: false,
       isMod: false,
+      isLeft: false,
     });
 
     socket.join(String(joinRoomCode));
@@ -159,7 +163,9 @@ io.on("connection", (socket) => {
     if (!room) return;
 
     room.videoInfo.isPlaying = true;
-    io.to(String(roomCode)).emit("sync-play-video");
+    const startedAt = room.videoInfo.startedAt;
+    const currentTime = (Date.now() - startedAt) / 1000;
+    io.to(String(roomCode)).emit("sync-play-video", { startedAt, currentTime });
   });
 
   // sync pause
@@ -190,7 +196,20 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("Client disconnected");
+    // Loop through all rooms to mark user as left
+    for (const roomCode in rooms) {
+      const room = rooms[roomCode];
+      const user = room.userInfo.find((u) => u.userId === socket.id);
+      if (user && !user.isLeft) {
+        user.isLeft = true;
+        user.status = "Left";
+        user.leftTime = Date.now();
+        console.log(`User ${user.name} disconnected from room ${roomCode}`);
+        const updatedUsers = rooms[roomCode].userInfo;
+        console.log(updatedUsers);
+        io.to(String(roomCode)).emit("sync-users", updatedUsers);
+      }
+    }
   });
 });
 

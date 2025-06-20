@@ -4,7 +4,7 @@ import UserBox from "./UserBox";
 import RoomContext from "../context/RoomContext";
 
 function Participants() {
-  const {users} = useContext(RoomContext);
+  const { users } = useContext(RoomContext);
 
   return (
     <div className="flex flex-col h-[500px] p-0 rounded-lg bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative">
@@ -30,6 +30,9 @@ function Participants() {
               time={item.time}
               isHost={item.isHost}
               isMod={item.isMod}
+              joinedTime={item.joinedTime}
+              isLeft={item.isLeft}
+              leftTime={item.leftTime}
             />
           ))}
         </div>
