@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Copy, LogOut, Menu, Play, Settings, UserPlus, X } from "lucide-react";
 import RoomContext from "../context/RoomContext";
-
+import SettingsMenu from "./SettingsMenu";
 
 function NavBar() {
   const { roomCode } = useContext(RoomContext);
@@ -73,7 +73,7 @@ Come vibe with me: ${dynamicLink}`;
 
   return (
     <>
-      <div className="w-full flex justify-between items-center px-5 lg:px-20 py-4 border-b border-white/10 bg-black/20 backdrop-blur-xl relative">
+      <div className="w-full flex justify-between items-center px-5 lg:px-20 py-4 border-b border-white/10 bg-black/20 backdrop-blur-xl relative z-50">
         {/* logo container */}
         <div className="flex items-center gap-5 ">
           <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
@@ -112,12 +112,10 @@ Come vibe with me: ${dynamicLink}`;
 
           <button
             title="settings"
-            className="flex items-center gap-2 justify-center h-9 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
+            className="mx-2 relative flex items-center gap-2 justify-center h-9 px-3 "
           >
-            <Settings size={15} />
+            <SettingsMenu />
           </button>
-
-          
         </div>
 
         <button onClick={() => toggleMenu()} className="lg:hidden text-white">

@@ -21,8 +21,8 @@ function HomePage() {
             <div className="flex flex-col gap-6 w-full lg:w-[70%]">
               {/* 16:9 Aspect Ratio Container */}
               <div className="relative pt-[56.25%] w-full bg-black rounded-xl overflow-hidden shadow-2xl">
-                <div className="absolute inset-0">
-                  <VideoPlayer videoId={"kKljXVVkgS4"} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <VideoPlayer videoId={"N3pcUbRwa5A"} />
                 </div>
               </div>
 
