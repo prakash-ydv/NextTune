@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import RoomContext from "../context/RoomContext";
+import { Minus, Plus } from "lucide-react";
 
 function SearchResult(props) {
   const { addVideoToQueue } = useContext(RoomContext);
-
   const [addVideo, setAddVideo] = useState("");
+  const [isAddedToQueue, setIsAddedToQueue] = useState(false);
 
   useEffect(() => {
     if (!props.video) return;
@@ -39,10 +40,17 @@ function SearchResult(props) {
       </div>
 
       <button
-        onClick={() => addVideoToQueue(addVideo)}
-        className="text-cyan-300 text-lg"
+        title="add/remove"
+        onClick={() => {
+          addVideoToQueue(addVideo);
+          setIsAddedToQueue((prev) => !prev);
+        }}
       >
-        +
+        {!isAddedToQueue ? (
+          <Plus className="text-green-500 text-lg" />
+        ) : (
+          <Minus className="text-red-500 text-lg" />
+        )}
       </button>
     </div>
   );
