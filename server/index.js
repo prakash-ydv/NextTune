@@ -60,6 +60,8 @@ io.on("connection", (socket) => {
         isPlaying: false,
         currentVideoId: "",
         startedAt: Date.now(),
+        pausedAt: null,
+        pausedDuration: 0,
         queue: [],
       },
       chatInfo: [
@@ -162,10 +164,24 @@ io.on("connection", (socket) => {
     const room = rooms[roomCode];
     if (!room) return;
 
-    room.videoInfo.isPlaying = true;
-    const startedAt = room.videoInfo.startedAt;
-    const currentTime = (Date.now() - startedAt) / 1000;
-    io.to(String(roomCode)).emit("sync-play-video", { startedAt, currentTime });
+    const videoInfo = room.videoInfo;
+    videoInfo.isPlaying = true;
+
+    // If resuming from pause
+    if (videoInfo.pausedAt !== null) {
+      // Add this pause duration to total paused time
+      videoInfo.pausedDuration += Date.now() - videoInfo.pausedAt;
+      videoInfo.pausedAt = null;
+    }
+
+    const currentTime =
+      (Date.now() - videoInfo.startedAt - videoInfo.pausedDuration) / 1000;
+
+    io.to(String(roomCode)).emit("sync-play-video", {
+      startedAt: videoInfo.startedAt,
+      currentTime,
+      pausedDuration: videoInfo.pausedDuration,
+    });
   });
 
   // sync pause
@@ -174,8 +190,13 @@ io.on("connection", (socket) => {
     const room = rooms[roomCode];
     if (!room) return;
 
-    room.videoInfo.isPlaying = false;
-    io.to(String(roomCode)).emit("sync-pause-video");
+    const videoInfo = room.videoInfo;
+    videoInfo.isPlaying = false;
+    videoInfo.pausedAt = Date.now();
+
+    io.to(String(roomCode)).emit("sync-pause-video", {
+      pausedAt: videoInfo.pausedAt,
+    });
   });
 
   // handle message
