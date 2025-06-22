@@ -26,7 +26,7 @@ export const RoomContextProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://localhost:3000");
+    socket.current = io("http://192.168.1.2:3000");
 
     // Cleanup function
     return () => {
@@ -41,7 +41,6 @@ export const RoomContextProvider = ({ children }) => {
     socket.current.on("room-created", (data) => {
       const roomCode = data.roomCode;
       const chats = data.chatInfo;
-      console.log(chats);
       const videoInfo = data.videoInfo;
       const users = data.users;
       setRoomCode(roomCode);
@@ -52,7 +51,6 @@ export const RoomContextProvider = ({ children }) => {
       setIsJoined(true);
 
       localStorage.setItem("room-code", roomCode);
-      console.log("Room Created with code", roomCode);
     });
 
     return () => {
@@ -70,7 +68,6 @@ export const RoomContextProvider = ({ children }) => {
           const roomCode = data.roomCode;
           const chats = data.chatInfo;
           const videoInfo = data.videoInfo; //videoInfo
-          console.log("videos ", videoInfo);
           const users = data.users;
           setRoomCode(roomCode);
           setChats(chats);
@@ -83,18 +80,13 @@ export const RoomContextProvider = ({ children }) => {
           if (videos.currentVideoId) {
             setCurrentVideoId(videoInfo.currentVideoId);
             if (videoInfo.isPlaying == true) {
-              console.log("Status", videoInfo.isPlaying);
               setIsPlaying(true);
-              console.log("P");
             } else {
-              console.log("PS");
-              console.log("Status", videoInfo.isPlaying);
               setIsPlaying(false);
             }
           }
 
           localStorage.setItem("room-code", roomCode);
-          console.log("Room Joined with code", roomCode);
         }
       },
       []
@@ -128,7 +120,6 @@ export const RoomContextProvider = ({ children }) => {
   // handle chat updage
   useEffect(() => {
     socket.current.on("updated-chat", (data) => {
-      console.log("chat update recieved");
       setChats(data);
     });
 
@@ -142,8 +133,6 @@ export const RoomContextProvider = ({ children }) => {
     if (!socket.current) return;
 
     socket.current.on("queue-updated", (data) => {
-      console.log("queue-updated");
-      console.log(data);
       if (data) {
         setVideos([...data]);
       }
@@ -162,7 +151,6 @@ export const RoomContextProvider = ({ children }) => {
       setIsPlaying(true);
       setStartedAt(startedAt);
       setCurrentTime(currentTime);
-      console.log("Play...");
     });
   }, []);
 
@@ -171,7 +159,6 @@ export const RoomContextProvider = ({ children }) => {
     if (!socket.current) return;
     socket.current.on("sync-pause-video", () => {
       setIsPlaying(false);
-      console.log("Pause...");
     });
   }, []);
 
@@ -200,7 +187,6 @@ export const RoomContextProvider = ({ children }) => {
       vdo,
       roomCode,
     });
-    console.log("Video Added");
   }
 
   // sync play
@@ -215,6 +201,7 @@ export const RoomContextProvider = ({ children }) => {
   }
 
   function togglePlayPause() {
+    if (!playerRef.current) return;
     if (isPlaying) {
       playerRef.current.pauseVideo();
       syncPauseVideo();
