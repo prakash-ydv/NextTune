@@ -28,7 +28,6 @@ let rooms = {};
 
 // WebSocket connection
 io.on("connection", (socket) => {
-  console.log("Client connected", socket.id);
 
   // create room
   socket.on("create-room", (data) => {
@@ -92,7 +91,6 @@ io.on("connection", (socket) => {
     };
 
     socket.join(String(code));
-    console.log("room created - ", code);
 
     const infos = {
       roomCode: code,
@@ -125,7 +123,6 @@ io.on("connection", (socket) => {
     });
 
     socket.join(String(joinRoomCode));
-    console.log("Room Joined", joinRoomCode);
 
     const infos = {
       roomCode: joinRoomCode,
@@ -142,7 +139,6 @@ io.on("connection", (socket) => {
     io.to(String(joinRoomCode)).emit("sync-users", updatedUsers);
     const updatedQueue = room.videoInfo.queue;
     io.to(String(joinRoomCode)).emit("queue-updated", updatedQueue);
-    console.log("new user joined");
   });
 
   // add video id to queue
@@ -155,7 +151,6 @@ io.on("connection", (socket) => {
     room.videoInfo.queue.push(vdo);
     const updatedQueue = room.videoInfo.queue;
     io.to(String(roomCode)).emit("queue-updated", updatedQueue);
-    console.log("Updated Queue Sent", updatedQueue);
   });
 
   // sync play
@@ -202,7 +197,6 @@ io.on("connection", (socket) => {
   // handle message
   socket.on("send-message", (data) => {
     const { roomCode, name, message, isAdmin, isMod, time } = data;
-    console.log("message sent to room", roomCode);
 
     const room = rooms[roomCode];
     room.chatInfo.push({
@@ -225,9 +219,7 @@ io.on("connection", (socket) => {
         user.isLeft = true;
         user.status = "Left";
         user.leftTime = Date.now();
-        console.log(`User ${user.name} disconnected from room ${roomCode}`);
         const updatedUsers = rooms[roomCode].userInfo;
-        console.log(updatedUsers);
         io.to(String(roomCode)).emit("sync-users", updatedUsers);
       }
     }
