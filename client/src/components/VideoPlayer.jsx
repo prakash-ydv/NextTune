@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 import RoomContext from "../context/RoomContext";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Settings } from "lucide-react";
 
 const YoutubePlayer = ({ videoId }) => {
   const {
@@ -10,14 +10,31 @@ const YoutubePlayer = ({ videoId }) => {
     syncPauseVideo,
     isPlaying,
     togglePlayPause,
+    currentVideoId,
   } = useContext(RoomContext);
 
   const [showControls, setShowControls] = useState(false);
-  const controlsTimeoutRef = useRef(null);
+  const [showQualityMenu, setShowQualityMenu] = useState(false);
   const [progress, setProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [currentVideoQuality, setCurrentVideoQuality] = useState("auto");
+
+  // refs
+  const controlsTimeoutRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const currentTime = useRef("00:00"); //store current time
+
+  const quality = [
+    { name: "2160p", code: "hd2160" },
+    { name: "1440p", code: "hd1440" },
+    { name: "1080p", code: "hd1080" },
+    { name: "720p", code: "hd720" },
+    { name: "480p", code: "large" },
+    { name: "360p", code: "medium" },
+    { name: "240p", code: "small" },
+    { name: "144p", code: "tiny" },
+    { name: "Auto", code: "auto" },
+  ];
 
   // Handle player ready
   function setPlayerRef(e) {
@@ -102,6 +119,13 @@ const YoutubePlayer = ({ videoId }) => {
     return `${minutes}:${seconds}`;
   }
 
+  // change quality
+  function changeQuality(quality, name) {
+    if (!playerRef.current) return;
+    setCurrentVideoQuality(name);
+    setShowQualityMenu(false);
+  }
+
   useEffect(() => {
     if (!playerRef.current) return;
 
@@ -123,7 +147,7 @@ const YoutubePlayer = ({ videoId }) => {
     width: "100%",
     height: "100%",
     playerVars: {
-      autoplay: 0,
+      autoplay: 1,
       controls: 0,
       rel: 0,
       modestbranding: 1,
@@ -169,7 +193,7 @@ const YoutubePlayer = ({ videoId }) => {
           {isPlaying ? <Pause /> : <Play />}
         </button>
 
-        <div className="w-[98%] absolute bottom-0 md:bottom-5">
+        <div className="w-[97%] absolute bottom-0 md:bottom-5">
           <div className="w-full flex items-center gap-2">
             {/* Only disable pointer events for the seek bar when controls are hidden */}
             <input
@@ -188,10 +212,40 @@ const YoutubePlayer = ({ videoId }) => {
               Live
             </button>
           </div>
-          <div className="px-1">
+          <div className="px-1 flex items-center gap-3">
             <span className="text-xs text-gray-500">
               {currentTime.current} / {getVideoDuration()}
             </span>
+
+            {/*  quality*/}
+
+            <button
+              onClick={() => setShowQualityMenu(true)}
+              className="quality-btn text-xs text-gray-500"
+            >
+              {currentVideoQuality}
+            </button>
+
+            <div
+              id="quality-buttons"
+              className={`${
+                showQualityMenu ? "flex" : "hidden"
+              } absolute flex-col gap-1 text-xs text-gray-500 bottom-8 left-22 bg-black/50 p-2 rounded-lg transition-all duration-300`}
+            >
+              {quality.map((item, index) => (
+                <button
+                  key={index}
+                  className={`${
+                    currentVideoQuality == item.name
+                      ? "text-cyan-500"
+                      : "text-gray-500"
+                  } quality-btn text-xs`}
+                  onClick={() => changeQuality(item.code, item.name)}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
