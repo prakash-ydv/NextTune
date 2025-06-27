@@ -143,6 +143,21 @@ export const RoomContextProvider = ({ children }) => {
     };
   }, [socket.current]);
 
+  // handle play from queue
+  useEffect(() => {
+    if (!socket.current) return;
+    socket.current.on("sync-play-from-queue", (data) => {
+      const { currentTime, videoId } = data;
+      setCurrentTime(currentTime);
+      setCurrentVideoId(videoId);
+      setIsPlaying(true);
+    });
+
+    return () => {
+      socket.current.off("sync-play-from-queue");
+    };
+  }, []);
+
   // sync play video
   useEffect(() => {
     if (!socket.current) return;
@@ -190,7 +205,7 @@ export const RoomContextProvider = ({ children }) => {
   }
 
   // sync play
-  function syncPlayVideo() {
+  function syncPlayVideo(id) {
     if (!isAdmin && !isMod) return;
     socket.current.emit("sync-play-video", { roomCode, currentVideoId });
   }
@@ -236,6 +251,7 @@ export const RoomContextProvider = ({ children }) => {
         syncPauseVideo,
         isPlaying,
         togglePlayPause,
+        currentVideoId,
       }}
     >
       {children}

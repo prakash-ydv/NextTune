@@ -3,7 +3,7 @@ import { Play, X } from "lucide-react";
 import RoomContext from "../context/RoomContext";
 
 function SongBoxForSongList({ title, thumbnail, channel, duration, id }) {
-  const { socket, roomCode } = useContext(RoomContext);
+  const { socket, roomCode, syncPlayVideo } = useContext(RoomContext);
   const [videoId, setVideoId] = useState(id);
   const [isSwiped, setIsSwiped] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -40,9 +40,16 @@ function SongBoxForSongList({ title, thumbnail, channel, duration, id }) {
     setStartX(0);
   };
 
+  // remove the video from queue
   function removeVideoFromQueue() {
     if (!socket) return;
     socket.emit("remove-video-from-queue", { videoId, roomCode });
+  }
+
+  // play the video
+  function playThisVideo() {
+    if (!socket) return;
+    socket.emit("play-video-from-queue", { videoId, roomCode });
   }
 
   const showButtons = isSwiped || isHovered;
@@ -85,6 +92,7 @@ function SongBoxForSongList({ title, thumbnail, channel, duration, id }) {
         showButtons && (
           <div className="absolute right-0 flex items-center gap-2 transition-opacity duration-300">
             <button
+              onClick={() => playThisVideo()}
               title="play"
               className="w-8 h-8 center hover:bg-white/10 rounded-full transition-all"
             >
@@ -102,6 +110,7 @@ function SongBoxForSongList({ title, thumbnail, channel, duration, id }) {
       ) : (
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
           <button
+            onClick={() => playThisVideo()}
             title="play"
             className="center w-8 h-8 p-0 hover:bg-white/10 rounded-full transition-all duration-200"
           >

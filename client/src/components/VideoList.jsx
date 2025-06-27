@@ -121,7 +121,7 @@ function SongList() {
               {videos.length > 0 &&
                 videos?.map((item, index) => (
                   <SongBoxForSongList
-                    key={index}
+                    key={item.id.videoId}
                     title={item.snippet.title}
                     id={item.id.videoId}
                     channel={item.snippet.channelTitle}

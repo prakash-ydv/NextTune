@@ -165,6 +165,23 @@ io.on("connection", (socket) => {
     io.to(String(roomCode)).emit("queue-updated", updatedQueue);
   });
 
+  // play video from qeueue
+  socket.on("play-video-from-queue", (data) => {
+    const { videoId, roomCode } = data;
+    const room = rooms[roomCode];
+    if (!room) return;
+
+    room.videoInfo.currentVideoId = videoId;
+    room.videoInfo.startedAt = Date.now();
+    room.videoInfo.pausedAt = null;
+    room.videoInfo.pausedDuration = 0;
+
+    io.to(String(roomCode)).emit("sync-play-from-queue", {
+      currentTime: Date.now() / 1000,
+      videoId: room.videoInfo.currentVideoId, // Send current video ID
+    });
+  });
+
   // sync play
   socket.on("sync-play-video", (data) => {
     const { roomCode, currentVideoId } = data; // Add videoId to parameters
