@@ -110,12 +110,12 @@ Come vibe with me: ${dynamicLink}`;
             <LogOut size={15} /> Leave
           </button>
 
-          <button
+          <div
             title="settings"
             className="mx-2 relative flex items-center gap-2 justify-center h-9 px-3 "
           >
             <SettingsMenu />
-          </button>
+          </div>
         </div>
 
         <button onClick={() => toggleMenu()} className="lg:hidden text-white">
