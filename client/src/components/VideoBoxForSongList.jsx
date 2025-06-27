@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Play, X } from "lucide-react";
+import RoomContext from "../context/RoomContext";
 
-function SongBoxForSongList({ title, thumbnail, channel, duration }) {
+function SongBoxForSongList({ title, thumbnail, channel, duration, id }) {
+  const { socket, roomCode } = useContext(RoomContext);
+  const [videoId, setVideoId] = useState(id);
   const [isSwiped, setIsSwiped] = useState(false);
   const [startX, setStartX] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -37,6 +40,11 @@ function SongBoxForSongList({ title, thumbnail, channel, duration }) {
     setStartX(0);
   };
 
+  function removeVideoFromQueue() {
+    if (!socket) return;
+    socket.emit("remove-video-from-queue", { videoId, roomCode });
+  }
+
   const showButtons = isSwiped || isHovered;
 
   return (
@@ -52,7 +60,6 @@ function SongBoxForSongList({ title, thumbnail, channel, duration }) {
     >
       {/* Thumbnail */}
       <div className="w-24 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg flex-shrink-0 flex items-center justify-center relative overflow-hidden">
-        
         <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
           {duration || "3:45"}
         </div>
@@ -77,20 +84,34 @@ function SongBoxForSongList({ title, thumbnail, channel, duration }) {
       {isMobile ? (
         showButtons && (
           <div className="absolute right-0 flex items-center gap-2 transition-opacity duration-300">
-            <button title="play" className="w-8 h-8 center hover:bg-white/10 rounded-full transition-all">
+            <button
+              title="play"
+              className="w-8 h-8 center hover:bg-white/10 rounded-full transition-all"
+            >
               <Play className="w-4 h-4 text-green-400" />
             </button>
-            <button title="remove" className="w-8 h-8 center hover:bg-white/10 rounded-full transition-all">
+            <button
+              onClick={() => removeVideoFromQueue()}
+              title="remove"
+              className="w-8 h-8 center hover:bg-white/10 rounded-full transition-all"
+            >
               <X className="w-4 h-4 text-red-400" />
             </button>
           </div>
         )
       ) : (
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <button title="play" className="center w-8 h-8 p-0 hover:bg-white/10 rounded-full transition-all duration-200">
+          <button
+            title="play"
+            className="center w-8 h-8 p-0 hover:bg-white/10 rounded-full transition-all duration-200"
+          >
             <Play className="w-3 h-3 text-green-400" />
           </button>
-          <button title="remove" className="center w-8 h-8 p-0 hover:bg-red-500/20 rounded-full transition-all duration-200">
+          <button
+            onClick={() => removeVideoFromQueue()}
+            title="remove"
+            className="center w-8 h-8 p-0 hover:bg-red-500/20 rounded-full transition-all duration-200"
+          >
             <X className="w-3 h-3 text-red-400" />
           </button>
         </div>

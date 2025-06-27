@@ -123,6 +123,7 @@ function SongList() {
                   <SongBoxForSongList
                     key={index}
                     title={item.snippet.title}
+                    id={item.id.videoId}
                     channel={item.snippet.channelTitle}
                     thumbnail={item.snippet.thumbnails.default.url}
                   />

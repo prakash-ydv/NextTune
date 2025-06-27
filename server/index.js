@@ -141,13 +141,26 @@ io.on("connection", (socket) => {
   });
 
   // add video id to queue
-
   socket.on("add-video-id-to-queue", (data) => {
     const { vdo, roomCode } = data;
 
     const room = rooms[roomCode];
     if (!room) return;
     room.videoInfo.queue.push(vdo);
+    const updatedQueue = room.videoInfo.queue;
+    io.to(String(roomCode)).emit("queue-updated", updatedQueue);
+  });
+
+  // remove video from queue
+  socket.on("remove-video-from-queue", (data) => {
+    const { videoId, roomCode } = data;
+    const room = rooms[roomCode];
+    if (!room) return;
+
+    // Filter out the videoId from the queue
+    room.videoInfo.queue = room.videoInfo.queue.filter(
+      (video) => video.id.videoId !== videoId
+    );
     const updatedQueue = room.videoInfo.queue;
     io.to(String(roomCode)).emit("queue-updated", updatedQueue);
   });
@@ -250,7 +263,7 @@ app.get("/search/:videoTitle", async (req, res) => {
     const response = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
         videoTitle
-      )}&key=${api_key}&maxResults=4`
+      )}&key=${api_key}&maxResults=5`
     );
 
     const data = await response.json();
