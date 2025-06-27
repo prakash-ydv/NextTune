@@ -28,7 +28,6 @@ let rooms = {};
 
 // WebSocket connection
 io.on("connection", (socket) => {
-
   // create room
   socket.on("create-room", (data) => {
     const { name, roomName } = data;
@@ -58,7 +57,7 @@ io.on("connection", (socket) => {
       videoInfo: {
         isPlaying: false,
         currentVideoId: "",
-        startedAt: Date.now(),
+        startedAt: 0,
         pausedAt: null,
         pausedDuration: 0,
         queue: [],
@@ -155,27 +154,39 @@ io.on("connection", (socket) => {
 
   // sync play
   socket.on("sync-play-video", (data) => {
-    const { roomCode } = data;
+    const { roomCode, currentVideoId } = data; // Add videoId to parameters
     const room = rooms[roomCode];
     if (!room) return;
 
     const videoInfo = room.videoInfo;
+
+    // Handle new video start
+    if (currentVideoId && videoInfo.currentVideoId !== currentVideoId) {
+      videoInfo.currentVideoId = currentVideoId;
+      videoInfo.startedAt = Date.now(); // Set start time when video changes
+      videoInfo.pausedDuration = 0;
+      videoInfo.pausedAt = null;
+    }
+
     videoInfo.isPlaying = true;
 
-    // If resuming from pause
+    // Handle resume from pause
     if (videoInfo.pausedAt !== null) {
-      // Add this pause duration to total paused time
       videoInfo.pausedDuration += Date.now() - videoInfo.pausedAt;
       videoInfo.pausedAt = null;
     }
 
-    const currentTime =
-      (Date.now() - videoInfo.startedAt - videoInfo.pausedDuration) / 1000;
+    // Calculate current time based on actual start
+    const baseTime =
+      videoInfo.startedAt > 0
+        ? Date.now() - videoInfo.startedAt - videoInfo.pausedDuration
+        : 0;
 
     io.to(String(roomCode)).emit("sync-play-video", {
       startedAt: videoInfo.startedAt,
-      currentTime,
+      currentTime: baseTime / 1000,
       pausedDuration: videoInfo.pausedDuration,
+      videoId: videoInfo.currentVideoId, // Send current video ID
     });
   });
 

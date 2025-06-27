@@ -14,7 +14,7 @@ export const RoomContextProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [videos, setVideos] = useState([]); //queue
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentVideoId, setCurrentVideoId] = useState("");
+  const [currentVideoId, setCurrentVideoId] = useState("c6oMDHja4gY");
   const [startedAt, setStartedAt] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [users, setUsers] = useState([]);
@@ -26,7 +26,7 @@ export const RoomContextProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://192.168.1.2:3000");
+    socket.current = io("http://localhost:3000");
 
     // Cleanup function
     return () => {
@@ -192,7 +192,7 @@ export const RoomContextProvider = ({ children }) => {
   // sync play
   function syncPlayVideo() {
     if (!isAdmin && !isMod) return;
-    socket.current.emit("sync-play-video", { roomCode });
+    socket.current.emit("sync-play-video", { roomCode, currentVideoId });
   }
 
   function syncPauseVideo() {
