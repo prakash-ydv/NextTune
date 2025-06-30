@@ -26,7 +26,7 @@ export const RoomContextProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://localhost:3000");
+    socket.current = io("http://192.168.1.6:3000");
 
     // Cleanup function
     return () => {
@@ -76,6 +76,7 @@ export const RoomContextProvider = ({ children }) => {
           setMyName(data.myName);
           setIsAdmin(data.isAdmin);
           setIsJoined(true);
+          setCurrentVideoId(videoInfo?.currentVideoId);
 
           if (videos.currentVideoId) {
             setCurrentVideoId(videoInfo.currentVideoId);
@@ -134,7 +135,7 @@ export const RoomContextProvider = ({ children }) => {
 
     socket.current.on("queue-updated", (data) => {
       if (data) {
-        setVideos([...data]);
+        setVideos([...data].reverse());
       }
     });
 
@@ -150,7 +151,6 @@ export const RoomContextProvider = ({ children }) => {
       const { currentTime, videoId } = data;
       setCurrentTime(currentTime);
       setCurrentVideoId(videoId);
-      setIsPlaying(true);
     });
 
     return () => {
