@@ -141,7 +141,7 @@ Come vibe with me: ${dynamicLink}`;
           className="flex items-center gap-2 justify-center h-9 w-42 px-2 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
         >
           <Copy size={15} />
-          {isCopied ? "Room Code" : "Copied"}
+          {isCopied ? `ID: ${roomCode}` : "Copied"}
         </button>
         <button className="flex items-center gap-2 justify-center h-9 w-42 px-2 border rounded-md border-white/20 text-red-500 hover:bg-red-500/10 bg-white/5">
           <LogOut size={15} /> Leave
