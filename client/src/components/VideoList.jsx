@@ -1,3 +1,5 @@
+// video search area
+
 import React, { useContext, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import SongBoxForSongList from "./VideoBoxForSongList";
