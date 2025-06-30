@@ -100,7 +100,7 @@ Come vibe with me: ${dynamicLink}`;
             className="flex items-center gap-2 justify-center h-9 w-32 px-3 border rounded-md border-white/20 text-white hover:bg-white/10 bg-white/5"
           >
             <Copy size={15} />
-            {isCopied ? "Room Code" : "Copied"}
+            {isCopied ? `ID: ${roomCode}` : "Copied"}
           </button>
 
           <button
