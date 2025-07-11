@@ -26,7 +26,7 @@ export const RoomContextProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://192.168.1.6:3000");
+    socket.current = io("http://192.168.1.9:3000");
 
     // Cleanup function
     return () => {
@@ -176,6 +176,18 @@ export const RoomContextProvider = ({ children }) => {
       setIsPlaying(false);
     });
   }, []);
+
+  // send heartbeat effect -- admin side
+  useEffect(() => {
+    if (!socket.current || !isAdmin) return;
+    let heartbeatInterval = setInterval(() => {
+      socket.current.emit("heart-beat-effect", roomCode);
+    }, 5000);
+
+    return () => {
+      clearInterval(heartbeatInterval);
+    };
+  }, [socket.current, isAdmin, roomCode]);
 
   //   create room function
   function createRoom(e) {
