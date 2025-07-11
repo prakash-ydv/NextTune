@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 import RoomContext from "../context/RoomContext";
-import { Play, Pause, Settings } from "lucide-react";
+import { Play, Pause, Settings, Volume2, VolumeOff } from "lucide-react";
 
 const YoutubePlayer = ({ videoId }) => {
   const {
@@ -18,6 +18,7 @@ const YoutubePlayer = ({ videoId }) => {
   const [progress, setProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [currentVideoQuality, setCurrentVideoQuality] = useState("auto");
+  const [isMuted, setIsMuted] = useState(false);
 
   // refs
   const controlsTimeoutRef = useRef(null);
@@ -126,6 +127,17 @@ const YoutubePlayer = ({ videoId }) => {
     setShowQualityMenu(false);
   }
 
+  // handle mute and unmute
+  function handleMute() {
+    if (!playerRef.current) return;
+    setIsMuted((prev) => !prev);
+    if (isMuted) {
+      playerRef.current.unMute();
+    } else {
+      playerRef.current.mute();
+    }
+  }
+
   useEffect(() => {
     if (!playerRef.current) return;
 
@@ -193,7 +205,7 @@ const YoutubePlayer = ({ videoId }) => {
           {isPlaying ? <Pause /> : <Play />}
         </button>
 
-        <div className="w-[97%] absolute bottom-0 md:bottom-5">
+        <div className="w-[97%] absolute bottom-2 md:bottom-5">
           <div className="w-full flex items-center gap-2">
             {/* Only disable pointer events for the seek bar when controls are hidden */}
             <input
@@ -212,7 +224,9 @@ const YoutubePlayer = ({ videoId }) => {
               Live
             </button>
           </div>
-          <div className="px-1 flex items-center gap-3">
+
+          {/* controler buttons */}
+          <div className="px-1 flex items-center gap-3 md:gap-4">
             <span className="text-xs text-gray-500">
               {currentTime.current} / {getVideoDuration()}
             </span>
@@ -246,6 +260,13 @@ const YoutubePlayer = ({ videoId }) => {
                 </button>
               ))}
             </div>
+            <button onClick={() => handleMute()}>
+              {isMuted ? (
+                <VolumeOff size={15} className="text-gray-500" />
+              ) : (
+                <Volume2 size={15} className="text-gray-500" />
+              )}
+            </button>
           </div>
         </div>
       </div>
