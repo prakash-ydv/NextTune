@@ -1,7 +1,15 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 import RoomContext from "../context/RoomContext";
-import { Play, Pause, Settings, Volume2, VolumeOff } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Settings,
+  Volume2,
+  VolumeOff,
+  Maximize,
+  Minimize,
+} from "lucide-react";
 
 const YoutubePlayer = ({ videoId }) => {
   const {
@@ -19,11 +27,13 @@ const YoutubePlayer = ({ videoId }) => {
   const [videoDuration, setVideoDuration] = useState(0);
   const [currentVideoQuality, setCurrentVideoQuality] = useState("auto");
   const [isMuted, setIsMuted] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   // refs
   const controlsTimeoutRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const currentTime = useRef("00:00"); //store current time
+  const playerContainerRef = useRef(null);
 
   const quality = [
     { name: "2160p", code: "hd2160" },
@@ -138,6 +148,26 @@ const YoutubePlayer = ({ videoId }) => {
     }
   }
 
+  function toggleFullScreen() {
+    if (!playerContainerRef || !playerContainerRef.current) return;
+
+    if (document.fullscreenElement) {
+      // Exit fullscreen (use on document, not on the element)
+      document.exitFullscreen();
+      setIsFullScreen(false);
+    } else {
+      // Enter fullscreen
+      playerContainerRef.current
+        .requestFullscreen()
+        .then(() => {
+          setIsFullScreen(true);
+        })
+        .catch((err) => {
+          console.error("Failed to enter fullscreen:", err);
+        });
+    }
+  }
+
   useEffect(() => {
     if (!playerRef.current) return;
 
@@ -172,6 +202,7 @@ const YoutubePlayer = ({ videoId }) => {
     <div
       className="relative aspect-video w-full mx-auto rounded-lg overflow-hidden"
       onClick={showControlsTemporarily}
+      ref={playerContainerRef}
     >
       <YouTube
         onReady={setPlayerRef}
@@ -206,7 +237,7 @@ const YoutubePlayer = ({ videoId }) => {
         </button>
 
         <div className="w-[97%] absolute bottom-2 md:bottom-5">
-          <div className="w-full flex items-center gap-2">
+          <div className="w-full flex items-center mb-2">
             {/* Only disable pointer events for the seek bar when controls are hidden */}
             <input
               type="range"
@@ -219,10 +250,6 @@ const YoutubePlayer = ({ videoId }) => {
               }`}
               onClick={(e) => e.stopPropagation()}
             />
-
-            <button title="sync" className="text-xs animate-pulse">
-              Live
-            </button>
           </div>
 
           {/* controler buttons */}
@@ -265,6 +292,17 @@ const YoutubePlayer = ({ videoId }) => {
                 <VolumeOff size={15} className="text-gray-500" />
               ) : (
                 <Volume2 size={15} className="text-gray-500" />
+              )}
+            </button>
+
+            <button
+              onClick={() => toggleFullScreen()}
+              className="absolute right-0"
+            >
+              {isFullScreen ? (
+                <Minimize size={15} className="text-gray-500" />
+              ) : (
+                <Maximize size={15} className="text-gray-500" />
               )}
             </button>
           </div>
