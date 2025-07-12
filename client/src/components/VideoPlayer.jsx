@@ -19,6 +19,7 @@ const YoutubePlayer = ({ videoId }) => {
     isPlaying,
     togglePlayPause,
     currentVideoId,
+    isAdmin
   } = useContext(RoomContext);
 
   const [showControls, setShowControls] = useState(false);
@@ -244,7 +245,9 @@ const YoutubePlayer = ({ videoId }) => {
             togglePlayPause();
             showControlsTemporarily();
           }}
-          className="p-4 bg-black/50 rounded-full hover:bg-black/70 transition-all"
+          className={`${
+            isAdmin ? "block" : "hidden"
+          } p-4 bg-black/50 rounded-full hover:bg-black/70 transition-all`}
         >
           {isPlaying ? <Pause /> : <Play />}
         </button>

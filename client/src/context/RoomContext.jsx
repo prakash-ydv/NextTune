@@ -230,7 +230,7 @@ export const RoomContextProvider = ({ children }) => {
   }
 
   function togglePlayPause() {
-    if (!playerRef.current) return;
+    if (!playerRef.current || !isAdmin) return;
     if (isPlaying) {
       playerRef.current.pauseVideo();
       syncPauseVideo();
