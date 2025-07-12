@@ -7,14 +7,14 @@ import fetch from "node-fetch";
 import { channel } from "diagnostics_channel";
 
 dotenv.config();
-
+const origin = process.env.origin;
 const api_key = process.env.api_key;
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "*", // Set your frontend URL here in production
+    origin: origin,
   },
 });
 

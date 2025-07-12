@@ -1,6 +1,8 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
 import io from "socket.io-client";
 
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+
 // 1. Create the context
 const RoomContext = createContext();
 
@@ -26,7 +28,7 @@ export const RoomContextProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://192.168.1.9:3000");
+    socket.current = io(SOCKET_URL);
 
     // Cleanup function
     return () => {
