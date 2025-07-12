@@ -10,7 +10,7 @@ import RoomContext from "../context/RoomContext";
 function HomePage() {
   const { users, videos, chats, currentVideoId } = useContext(RoomContext);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
+    <div className="min-h-screen pb-2 bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
       <NavBar />
 
       <div className="container mx-auto px-4 py-4 max-w-[90rem]">

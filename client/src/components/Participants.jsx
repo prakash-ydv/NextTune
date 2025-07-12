@@ -7,7 +7,7 @@ function Participants() {
   const { users } = useContext(RoomContext);
 
   return (
-    <div className="flex flex-col h-[500px] p-0 rounded-lg bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative">
+    <div className="flex flex-col max-h-[500px] md:h-[500px] p-0 rounded-lg bg-white/5 border-white/10 backdrop-blur-xl shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative">
       {/* Enhanced Sticky Header */}
       <div className="sticky top-0 z-10 overflow-hidden">
         <div className="flex text-sm items-center bg-black/25 gap-4 px-5 py-3 backdrop-blur-3xl">
