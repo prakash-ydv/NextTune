@@ -134,6 +134,7 @@ const YoutubePlayer = ({ videoId }) => {
   function changeQuality(quality, name) {
     if (!playerRef.current) return;
     setCurrentVideoQuality(name);
+    playerRef.current.setPlaybackQuality(quality);
     setShowQualityMenu(false);
   }
 
@@ -167,6 +168,18 @@ const YoutubePlayer = ({ videoId }) => {
         });
     }
   }
+
+  // set isFullScreen to false when esc key is pressed
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!playerRef.current) return;
