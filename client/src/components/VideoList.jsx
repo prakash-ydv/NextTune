@@ -91,7 +91,7 @@ function SongList() {
               </form>
 
               {searchResult ? (
-                <div className="w-full h-full flex flex-col center ">
+                <div className="w-full h-full flex flex-col">
                   {searchResult ? "" : <h1>Admin can add videos</h1>}
                   {searchResult?.map((item, index) => (
                     <SearchResult
