@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
         {
           name: "NextTune",
           message:
-            "You can also chat with you friends :-), Just start typing..",
+            `Your room code is ${code}, invite your friends and enjoy together..`,
           time: Date.now(),
           isAdmin: false,
           isMod: true,
