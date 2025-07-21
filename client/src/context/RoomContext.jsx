@@ -165,7 +165,7 @@ export const RoomContextProvider = ({ children }) => {
 
     // Track if we're currently syncing to avoid feedback loops
     let isSyncing = false;
-    const SYNC_THRESHOLD = 0.5; // 500ms threshold
+    const SYNC_THRESHOLD = 0.2; // 200ms threshold
 
     const handleSyncPlay = (data) => {
       setIsPlaying(true);
