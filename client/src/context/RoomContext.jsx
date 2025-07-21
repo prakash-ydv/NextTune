@@ -235,7 +235,7 @@ export const RoomContextProvider = ({ children }) => {
   }
 
   // sync play
-  function syncPlayVideo(id) {
+  function syncPlayVideo(currentVideoId) {
     if (!isAdmin && !isMod) return;
     socket.current.emit("sync-play-video", { roomCode, currentVideoId });
   }
@@ -261,7 +261,7 @@ export const RoomContextProvider = ({ children }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (socket.current && isAdmin && isPlaying) {
-        syncPlayVideo();
+        syncPlayVideo(currentVideoId);
       }
     }, 5000);
 
