@@ -19,7 +19,8 @@ const YoutubePlayer = ({ videoId }) => {
     isPlaying,
     togglePlayPause,
     currentVideoId,
-    isAdmin
+    setCurrentTime,
+    isAdmin,
   } = useContext(RoomContext);
 
   const [showControls, setShowControls] = useState(false);
@@ -78,6 +79,7 @@ const YoutubePlayer = ({ videoId }) => {
     progressIntervalRef.current = setInterval(() => {
       if (playerRef.current) {
         const currentTime = playerRef.current.getCurrentTime();
+        setCurrentTime(currentTime);
         const duration = playerRef.current.getDuration();
         setProgress((currentTime / duration) * 100);
       }
@@ -221,7 +223,6 @@ const YoutubePlayer = ({ videoId }) => {
       <YouTube
         onReady={setPlayerRef}
         onPlay={() => {
-          syncPlayVideo();
           startProgressTracking();
         }}
         onPause={() => {

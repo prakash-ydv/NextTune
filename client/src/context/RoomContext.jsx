@@ -16,7 +16,7 @@ export const RoomContextProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [videos, setVideos] = useState([]); //queue
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentVideoId, setCurrentVideoId] = useState("c6oMDHja4gY");
+  const [currentVideoId, setCurrentVideoId] = useState("BSJa1UytM8w");
   const [startedAt, setStartedAt] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [users, setUsers] = useState([]);
@@ -101,13 +101,12 @@ export const RoomContextProvider = ({ children }) => {
     };
   }, []);
 
-  // handle play pause state change
+  // handle video time after play pause event change
   useEffect(() => {
     if (!playerRef.current) return;
 
     if (isPlaying) {
       playerRef.current.playVideo();
-      playerRef.current.seekTo(currentTime, true);
     } else {
       playerRef.current.pauseVideo();
     }
@@ -163,13 +162,42 @@ export const RoomContextProvider = ({ children }) => {
   // sync play video
   useEffect(() => {
     if (!socket.current) return;
-    socket.current.on("sync-play-video", (data) => {
-      const { startedAt, currentTime } = data;
+
+    // Track if we're currently syncing to avoid feedback loops
+    let isSyncing = false;
+    const SYNC_THRESHOLD = 0.5; // 500ms threshold
+
+    const handleSyncPlay = (data) => {
       setIsPlaying(true);
-      setStartedAt(startedAt);
-      setCurrentTime(currentTime);
-    });
-  }, []);
+      if (isSyncing) return;
+
+      const { startedAt, currentTime: serverTime } = data;
+      if (!playerRef.current) return;
+
+      const localTime = playerRef.current.getCurrentTime();
+      const timeDiff = Math.abs(localTime - serverTime);
+
+      // Only sync if the difference exceeds our threshold
+      if (timeDiff > SYNC_THRESHOLD) {
+        isSyncing = true;
+
+        setStartedAt(startedAt);
+        playerRef.current.seekTo(serverTime, true);
+        setCurrentTime(serverTime);
+
+        // Reset sync lock after a short delay
+        setTimeout(() => {
+          isSyncing = false;
+        }, 1000);
+      }
+    };
+
+    socket.current.on("sync-play-video", handleSyncPlay);
+
+    return () => {
+      socket.current?.off("sync-play-video", handleSyncPlay);
+    };
+  }, [socket.current]);
 
   // sync pause video
   useEffect(() => {
@@ -178,18 +206,6 @@ export const RoomContextProvider = ({ children }) => {
       setIsPlaying(false);
     });
   }, []);
-
-  // send heartbeat effect -- admin side
-  useEffect(() => {
-    if (!socket.current || !isAdmin) return;
-    let heartbeatInterval = setInterval(() => {
-      socket.current.emit("heart-beat-effect", roomCode);
-    }, 5000);
-
-    return () => {
-      clearInterval(heartbeatInterval);
-    };
-  }, [socket.current, isAdmin, roomCode]);
 
   //   create room function
   function createRoom(e) {
@@ -239,6 +255,21 @@ export const RoomContextProvider = ({ children }) => {
       syncPlayVideo();
     }
   }
+
+  // heartbeat effect
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (socket.current && isAdmin && isPlaying) {
+        syncPlayVideo();
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isPlaying, socket.current]);
+
   return (
     <RoomContext.Provider
       value={{
@@ -266,6 +297,7 @@ export const RoomContextProvider = ({ children }) => {
         isPlaying,
         togglePlayPause,
         currentVideoId,
+        setCurrentTime,
       }}
     >
       {children}

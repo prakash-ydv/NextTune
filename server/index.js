@@ -251,31 +251,6 @@ io.on("connection", (socket) => {
     io.to(String(roomCode)).emit("updated-chat", room.chatInfo);
   });
 
-  // heartbeat effect
-  socket.on("heart-beat-effect", (data) => {
-    console.log("heart recieved");
-    const roomCode = data;
-    const room = rooms[roomCode];
-    if (!room) return;
-
-    const videoInfo = room.videoInfo;
-
-    if (videoInfo.isPlaying == false) return;
-    // Calculate current time based on actual start
-    const baseTime =
-      videoInfo.startedAt > 0
-        ? Date.now() - videoInfo.startedAt - videoInfo.pausedDuration
-        : 0;
-
-    io.to(String(roomCode)).emit("sync-play-video", {
-      startedAt: videoInfo.startedAt,
-      currentTime: baseTime / 1000,
-      pausedDuration: videoInfo.pausedDuration,
-      videoId: videoInfo.currentVideoId, // Send current video ID
-    });
-    console.log("heartbeat sent");
-  });
-
   socket.on("disconnect", () => {
     // Loop through all rooms to mark user as left
     for (const roomCode in rooms) {
