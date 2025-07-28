@@ -196,7 +196,7 @@ const YoutubePlayer = ({ videoId }) => {
           currentTime.current = currentTimeOfVideo(t);
         });
       }
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(intervalId);
   }, [playerRef, isPlaying]); // Use the ref object, not playerRef.current
