@@ -14,7 +14,8 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://next-tune.vercel.app/",
+    origin: ["http://localhost:5173", "https://next-tune.vercel.app"],
+    methods: ["GET", "POST"],
   },
 });
 
