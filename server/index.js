@@ -14,7 +14,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: origin,
+    origin: "https://next-tune.vercel.app/",
   },
 });
 
@@ -73,8 +73,7 @@ io.on("connection", (socket) => {
         },
         {
           name: "NextTune",
-          message:
-            `Your room code is ${code}, invite your friends and enjoy together..`,
+          message: `Your room code is ${code}, invite your friends and enjoy together..`,
           time: Date.now(),
           isAdmin: false,
           isMod: true,
