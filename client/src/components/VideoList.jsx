@@ -120,6 +120,11 @@ function SongList() {
               transition={{ duration: 0.2 }}
               className="flex flex-col gap-2 px-5 py-4"
             >
+              {videos.length === 0 && (
+                <div className="flex h-full gap-2 items-center justify-center text-gray-400 text-lg font-light">
+                  <h1>No Video in the Queue</h1>
+                </div>
+              )}
               {videos.length > 0 &&
                 videos?.map((item, index) => (
                   <SongBoxForSongList

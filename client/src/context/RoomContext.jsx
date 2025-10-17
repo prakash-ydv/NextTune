@@ -16,7 +16,7 @@ export const RoomContextProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [videos, setVideos] = useState([]); //queue
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentVideoId, setCurrentVideoId] = useState("BSJa1UytM8w");
+  const [currentVideoId, setCurrentVideoId] = useState("tnhizk_YofQ");
   const [startedAt, setStartedAt] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [users, setUsers] = useState([]);
