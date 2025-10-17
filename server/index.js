@@ -252,6 +252,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    console.log("disconnected");
     // Loop through all rooms to mark user as left
     for (const roomCode in rooms) {
       const room = rooms[roomCode];
